@@ -1,0 +1,31 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: echoserver
+  namespace: default
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: vuong7.handmade-vn.com
+    http:
+      paths:
+      - backend:
+          service:
+            name: nginx-svc
+            port:
+            #port ingress tro vao trung voi ben kia
+              number: 8080
+        path: /
+        pathType: Prefix
+  - host: vuong9.handmade-vn.com
+    http:
+      paths:
+      - backend:
+          service:
+            name: echoserver
+            port:
+            #port ingress tro vao trung voi ben kia
+              number: 8080
+        path: /
+        pathType: Prefix

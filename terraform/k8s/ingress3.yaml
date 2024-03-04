@@ -1,0 +1,40 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: echoserver
+  namespace: default
+#  annotations:
+#    kubernetes.io/ingress.class: nginx
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: vuong8.handmade-vn.com
+    http:
+      paths:
+      - backend:
+          service:
+            name: nginx-svc
+            port:
+            #port ingress tro vao trung voi ben kia
+              number: 8080
+        path: /
+        pathType: Prefix
+  - host: vuong9.handmade-vn.com
+    http:
+      paths:
+      - backend:
+          service:
+            name: echoserver
+            port:
+            #port ingress tro vao trung voi ben kia
+              number: 8088
+        path: /
+        pathType: Prefix
+
+
+#deploy follow aws:  
+#kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.2/deploy/static/provider/aws/deploy.yaml
+#we need   annotations:
+#    kubernetes.io/ingress.class: nginx
+# or ingressClassName: nginx
