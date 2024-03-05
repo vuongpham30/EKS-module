@@ -1,40 +1,43 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx
-  namespace: default
+  name: echo-deployment
 spec:
+  replicas: 3
   selector:
     matchLabels:
-      app: nginx
-  replicas: 1
+      app: echo-pod
   template:
     metadata:
       labels:
-        app: nginx
+        app: echo-pod
     spec:
       containers:
-      - image: nginx
-        name: nginx
+      - name: echoheaders
+        image: k8s.gcr.io/echoserver:1.10
+        imagePullPolicy: IfNotPresent
         ports:
-        - containerPort: 80
+        - containerPort: 8080
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: nginx
+  name: echo-service
   annotations:
+    # Note that the backend talks over HTTP.
     service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
+    # TODO: Fill in with the ARN of your certificate.
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:eu-west-3:632764523156:certificate/d1d8c4a8-e4b5-4275-96bd-7f82b07d8f11
+    # Only run SSL on the port named "https" below.
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "https"
 spec:
+  selector:
+    app: echo-pod
   ports:
   - name: http
     port: 80
-    targetPort: 80
+    targetPort: 8080
   - name: https
     port: 443
-    targetPort: 80
+    targetPort: 8080
   type: LoadBalancer
-  selector:
-    app: nginx

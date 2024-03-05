@@ -60,7 +60,7 @@ module "eks" {
     },
   ]
 
-  
+
   tags = {
     Environment = "staging"
   }
